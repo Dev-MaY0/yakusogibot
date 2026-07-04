@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model GuildSettings {
+  guildId           String   @id
+  logChannelId      String?
+  verifyChannelId   String?
+  verifyRoleId      String?
+  earthquakeChannel String?
+  earthquakeMinInt  String? // 最小震度
+  earthquakeRegion  String? // 通知地域
+  warnLimit         Int      @default(3) // 何回でタイムアウト等の処罰を行うか
+  warnPunishment    String   @default("timeout") // timeout, kick, ban
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model AutoRole {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  roleId    String
+  createdAt DateTime @default(now())
+}
+
+model Warn {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  userId    String
+  moderator String
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model NGWord {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  word      String
+  createdAt DateTime @default(now())
+}
+
+model Memo {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  content   String
+  priority  String   @default("normal") // low, normal, high
+  deadline  DateTime?
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ScheduledMessage {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  channelId String
+  userId    String
+  content   String
+  sendAt    DateTime
+  sent      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Timer {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  channelId String
+  duration  Int      // 秒数
+  endAt     DateTime
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  channelId String
+  userId    String
+  status    String   @default("open") // open, closed
+  createdAt DateTime @default(now())
+}
+
+model Recruit {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  channelId String
+  messageId String
+  userId    String
+  type      String   // game, vc, event, free
+  title     String
+  capacity  Int
+  deadline  DateTime?
+  status    String   @default("open") // open, closed, full
+  createdAt DateTime @default(now())
+}
+
+model RecruitMember {
+  id        Int      @id @default(autoincrement())
+  recruitId Int
+  userId    String
+  createdAt DateTime @default(now())
+}
